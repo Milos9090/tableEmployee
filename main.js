@@ -48,8 +48,8 @@ class Table {
   //filter
   filter() { }
 
-  generateTable(table, data) {
-    for (let index = 0; index < 10; index++) {
+  generateTable(table, data, start, end) {
+    for (let index = start; index < end; index++) {
       const element = data[index];
       let row = table.insertRow();
       this.insertCellText(element.picture, row)
@@ -62,6 +62,23 @@ class Table {
       this.insertCellText(element.isVacation, row)
       this.insertCellText(element.salary, row)
     };
+  }
+
+  createButtons(element,numberOfEmployees){
+    let button = document.createElement("button");
+    let text = document.createTextNode("<");
+    button.appendChild(text);
+    element.appendChild(button);
+    for (let index = 1; index <= numberOfEmployees; index++) {
+      button = document.createElement("button");
+      text = document.createTextNode(index);
+      button.appendChild(text);
+      element.appendChild(button);
+    }
+    button = document.createElement("button");
+    text = document.createTextNode(">");
+    button.appendChild(text);
+    element.appendChild(button);
   }
 }
 
@@ -81,12 +98,14 @@ async function fetchData() {
 async function main() {
   await fetchData();
   let table = document.querySelector("table");
+  let buttonContainer = document.querySelector(".buttonContainer");
   let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
 
   var createTable = new Table;
 
   createTable.generateTableHead(table, data);
-  createTable.generateTable(table, listOfEmloyees);
+  createTable.generateTable(table, listOfEmloyees, 10, 20);
+  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
 }
 
 main();
