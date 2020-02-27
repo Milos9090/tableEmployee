@@ -1,4 +1,4 @@
-var listOfEmloyees = []
+let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
 class Employee {
   //init
   constructor(employeeData) {
@@ -36,20 +36,8 @@ class Table {
     }
   }
 
-  //pagination
-  pagination() { }
-
-  //search
-  search() { }
-
-  //sort
-  sort() { }
-
-  //filter
-  filter() { }
-
-  generateTable(table, data, start, end) {
-    for (let index = start; index < end; index++) {
+  generateTable(table, data) {
+    for (let index = 0; index < 10; index++) {
       const element = data[index];
       let row = table.insertRow();
       this.insertCellText(element.picture, row)
@@ -64,25 +52,42 @@ class Table {
     };
   }
 
-  createButtons(element,numberOfEmployees){
-    let button = document.createElement("button");
-    let text = document.createTextNode("<");
-    button.appendChild(text);
-    element.appendChild(button);
+  createButtons(element, numberOfEmployees) {
+    this.buttonCreate(element, '<');
     for (let index = 1; index <= numberOfEmployees; index++) {
-      button = document.createElement("button");
-      text = document.createTextNode(index);
-      button.appendChild(text);
-      element.appendChild(button);
+      this.buttonCreate(element, index);
     }
-    button = document.createElement("button");
-    text = document.createTextNode(">");
+    this.buttonCreate(element, '>');
+  }
+
+  buttonCreate(element, simbol) {
+    let button = document.createElement("button");
+    let text = document.createTextNode(simbol);
+    let att = document.createAttribute("onclick");
+    att.value = "paginationTable('" + simbol + "');";
     button.appendChild(text);
+    button.setAttributeNode(att);
     element.appendChild(button);
+  }
+
+  //pagination
+  paginationTable() { }
+
+  //search
+  search() { }
+
+  //sort
+  sort() { }
+
+  //filter
+  filter() { }
+
+  removeTable(table) {
+    table.remove();
   }
 }
 
-async function fetchData() {
+async function fetchData(listOfEmloyees) {
   await fetch('./employee.json')
     .then((response) => {
       return response.json();
@@ -95,17 +100,27 @@ async function fetchData() {
     })
 }
 
+//pagination
+function paginationTable(number, listOfEmloyees) {
+  return listOfEmloyees.slice((number - 1) * 10, number * 10);
+}
+
 async function main() {
-  await fetchData();
+
+  var listOfEmloyees = []
+  await fetchData(listOfEmloyees);
+  var currentEmployeeList = listOfEmloyees;
   let table = document.querySelector("table");
   let buttonContainer = document.querySelector(".buttonContainer");
-  let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
 
   var createTable = new Table;
-
   createTable.generateTableHead(table, data);
-  createTable.generateTable(table, listOfEmloyees, 10, 20);
+  createTable.generateTable(table, listOfEmloyees);
   createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
+  var temp = paginationTable(8, listOfEmloyees);
+  console.log(temp);
+
 }
 
 main();
+
