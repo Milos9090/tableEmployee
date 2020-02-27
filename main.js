@@ -52,6 +52,33 @@ class Table {
     };
   }
 
+  changeTableContent(table, data) {
+    for (let index = 0; index < 10; index++) {
+      const element = data[index];
+      var tableChildren = table.children[0].children;
+      for (let jndex = 1; jndex < 8; jndex++) {
+        let tableTrElement;
+        if (element === null) {
+          //set empty characters 
+        }
+        this.insertCellText(element.picture, row)
+        this.insertCellText(element.name, row)
+        this.insertCellText(element.age, row)
+        this.insertCellText(element.gender, row)
+        this.insertCellText(element.email, row)
+        this.insertCellText(element.phone, row)
+        this.insertCellText(element.vacationDays, row)
+        this.insertCellText(element.isVacation, row)
+        this.insertCellText(element.salary, row)
+      }
+    }
+  }
+
+  //pagination
+  paginationTable(number, listOfEmloyees) {
+    return listOfEmloyees.slice((number - 1) * 10, number * 10);
+  }
+
   createButtons(element, numberOfEmployees) {
     this.buttonCreate(element, '<');
     for (let index = 1; index <= numberOfEmployees; index++) {
@@ -100,16 +127,10 @@ async function fetchData(listOfEmloyees) {
     })
 }
 
-//pagination
-function paginationTable(number, listOfEmloyees) {
-  return listOfEmloyees.slice((number - 1) * 10, number * 10);
-}
-
 async function main() {
 
   var listOfEmloyees = []
   await fetchData(listOfEmloyees);
-  var currentEmployeeList = listOfEmloyees;
   let table = document.querySelector("table");
   let buttonContainer = document.querySelector(".buttonContainer");
 
@@ -117,8 +138,6 @@ async function main() {
   createTable.generateTableHead(table, data);
   createTable.generateTable(table, listOfEmloyees);
   createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
-  var temp = paginationTable(8, listOfEmloyees);
-  console.log(temp);
 
 }
 
