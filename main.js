@@ -58,7 +58,11 @@ class Table {
   }
 
   changeTableContent(table, data) {
-    for (let index = 0; index <= 10; index++) {
+    let listSize = data.length;
+    if (listSize < 10) {
+      let addEmpty = 10 - listSize;
+    }
+    for (let index = 0; index < listSize; index++) {
       let element = data[index];
       let jndex = index * 9;
       table[jndex + 0].textContent = element.picture;
@@ -71,8 +75,20 @@ class Table {
       table[jndex + 7].textContent = element.isVacation;
       table[jndex + 8].textContent = element.salary;
     }
+    for (let index = listSize; index < 10; index++) {
+      let jndex = index * 9;
+      table[jndex + 0].textContent = "";
+      table[jndex + 1].textContent = "";
+      table[jndex + 2].textContent = "";
+      table[jndex + 3].textContent = "";
+      table[jndex + 4].textContent = "";
+      table[jndex + 5].textContent = "";
+      table[jndex + 6].textContent = "";
+      table[jndex + 7].textContent = "";
+      table[jndex + 8].textContent = "";
+    }
   }
-
+  // array of button creation
   createButtons(element, numberOfEmployees) {
     this.buttonCreate(element, '<');
     for (let index = 1; index <= numberOfEmployees; index++) {
@@ -80,7 +96,7 @@ class Table {
     }
     this.buttonCreate(element, '>');
   }
-
+  // button creation
   buttonCreate(element, simbol) {
     let button = document.createElement("button");
     let text = document.createTextNode(simbol);
@@ -105,12 +121,14 @@ class Table {
   }
 }
 
+//onclick function for pagination
 function paginationTable(requiredNumber) {
   var createTable = new Table;
   var listSliced = listOfEmloyees.slice((requiredNumber - 1) * 10, requiredNumber * 10);
   createTable.changeTableContent(cell, listSliced);
 };
 
+//json access and fetching data
 async function fetchData(listOfEmloyees) {
   await fetch('./employee.json')
     .then((response) => {
