@@ -1,4 +1,6 @@
 let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
+let cell;
+var listOfEmloyees = []
 class Employee {
   //init
   constructor(employeeData) {
@@ -22,6 +24,9 @@ class Table {
   insertCellText(element, row) {
     let cell = row.insertCell();
     let text = document.createTextNode(element);
+    let att = document.createAttribute("class");
+    att.value = "cell text";
+    cell.setAttributeNode(att)
     cell.appendChild(text);
   }
 
@@ -53,30 +58,19 @@ class Table {
   }
 
   changeTableContent(table, data) {
-    for (let index = 0; index < 10; index++) {
-      const element = data[index];
-      var tableChildren = table.children[0].children;
-      for (let jndex = 1; jndex < 8; jndex++) {
-        let tableTrElement;
-        if (element === null) {
-          //set empty characters 
-        }
-        this.insertCellText(element.picture, row)
-        this.insertCellText(element.name, row)
-        this.insertCellText(element.age, row)
-        this.insertCellText(element.gender, row)
-        this.insertCellText(element.email, row)
-        this.insertCellText(element.phone, row)
-        this.insertCellText(element.vacationDays, row)
-        this.insertCellText(element.isVacation, row)
-        this.insertCellText(element.salary, row)
-      }
+    for (let index = 0; index <= 10; index++) {
+      let element = data[index];
+      let jndex = index * 9;
+      table[jndex + 0].textContent = element.picture;
+      table[jndex + 1].textContent = element.name;
+      table[jndex + 2].textContent = element.age;
+      table[jndex + 3].textContent = element.gender;
+      table[jndex + 4].textContent = element.email;
+      table[jndex + 5].textContent = element.phone;
+      table[jndex + 6].textContent = element.vacationDays;
+      table[jndex + 7].textContent = element.isVacation;
+      table[jndex + 8].textContent = element.salary;
     }
-  }
-
-  //pagination
-  paginationTable(number, listOfEmloyees) {
-    return listOfEmloyees.slice((number - 1) * 10, number * 10);
   }
 
   createButtons(element, numberOfEmployees) {
@@ -91,14 +85,11 @@ class Table {
     let button = document.createElement("button");
     let text = document.createTextNode(simbol);
     let att = document.createAttribute("onclick");
-    att.value = "paginationTable('" + simbol + "');";
+    att.value = "paginationTable(" + simbol + ");";
     button.appendChild(text);
     button.setAttributeNode(att);
     element.appendChild(button);
   }
-
-  //pagination
-  paginationTable() { }
 
   //search
   search() { }
@@ -113,6 +104,12 @@ class Table {
     table.remove();
   }
 }
+
+function paginationTable(requiredNumber) {
+  var createTable = new Table;
+  var listSliced = listOfEmloyees.slice((requiredNumber - 1) * 10, requiredNumber * 10);
+  createTable.changeTableContent(cell, listSliced);
+};
 
 async function fetchData(listOfEmloyees) {
   await fetch('./employee.json')
@@ -129,7 +126,6 @@ async function fetchData(listOfEmloyees) {
 
 async function main() {
 
-  var listOfEmloyees = []
   await fetchData(listOfEmloyees);
   let table = document.querySelector("table");
   let buttonContainer = document.querySelector(".buttonContainer");
@@ -138,7 +134,7 @@ async function main() {
   createTable.generateTableHead(table, data);
   createTable.generateTable(table, listOfEmloyees);
   createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
-
+  cell = document.querySelectorAll(".cell.text");
 }
 
 main();
