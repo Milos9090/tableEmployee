@@ -1,6 +1,7 @@
 let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
 let cell;
 var listOfEmloyees = []
+var buttonStatus = 2;
 class Employee {
   //init
   constructor(employeeData) {
@@ -59,9 +60,6 @@ class Table {
 
   changeTableContent(table, data) {
     let listSize = data.length;
-    if (listSize < 10) {
-      let addEmpty = 10 - listSize;
-    }
     for (let index = 0; index < listSize; index++) {
       let element = data[index];
       let jndex = index * 9;
@@ -101,7 +99,7 @@ class Table {
     let button = document.createElement("button");
     let text = document.createTextNode(simbol);
     let att = document.createAttribute("onclick");
-    att.value = "paginationTable(" + simbol + ");";
+    att.value = "paginationTable('" + simbol + "');";
     button.appendChild(text);
     button.setAttributeNode(att);
     element.appendChild(button);
@@ -123,8 +121,18 @@ class Table {
 
 //onclick function for pagination
 function paginationTable(requiredNumber) {
+  console.log(requiredNumber + " " + buttonStatus);
+  let left = '<';
+  let right = '>';
+  if (left === requiredNumber && buttonStatus !== 1) {
+    buttonStatus--;
+  } else if (right === requiredNumber && buttonStatus !== Math.ceil(listOfEmloyees.length / 10)) {
+    buttonStatus++;
+  } else {
+    buttonStatus = requiredNumber;
+  }
   var createTable = new Table;
-  var listSliced = listOfEmloyees.slice((requiredNumber - 1) * 10, requiredNumber * 10);
+  var listSliced = listOfEmloyees.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
 
@@ -143,7 +151,6 @@ async function fetchData(listOfEmloyees) {
 }
 
 async function main() {
-
   await fetchData(listOfEmloyees);
   let table = document.querySelector("table");
   let buttonContainer = document.querySelector(".buttonContainer");
