@@ -121,20 +121,25 @@ class Table {
 
 //onclick function for pagination
 function paginationTable(requiredNumber) {
-  console.log(requiredNumber + " " + buttonStatus);
+  var createTable = new Table;
   let left = '<';
   let right = '>';
-  if (left === requiredNumber && buttonStatus !== 1) {
+  if (left === requiredNumber && buttonStatus != 1) {
     buttonStatus--;
-  } else if (right === requiredNumber && buttonStatus !== Math.ceil(listOfEmloyees.length / 10)) {
+  } else if (right === requiredNumber && buttonStatus != Math.ceil(listOfEmloyees.length / 10)) {
     buttonStatus++;
   } else {
+    if(left !== requiredNumber && right !== requiredNumber){
     buttonStatus = requiredNumber;
+    }
   }
-  var createTable = new Table;
   var listSliced = listOfEmloyees.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
+
+function search(){
+  
+}
 
 //json access and fetching data
 async function fetchData(listOfEmloyees) {
