@@ -88,20 +88,20 @@ class Table {
     }
   }
   // array of button creation
-  createButtons(element, numberOfEmployees) {
+  createButtons(element, numberOfEmployees, list) {
     element.innerHTML = '';
-    this.buttonCreate(element, '<');
+    this.buttonCreate(element, '<' , list);
     for (let index = 1; index <= numberOfEmployees; index++) {
-      this.buttonCreate(element, index);
+      this.buttonCreate(element, index, list);
     }
-    this.buttonCreate(element, '>');
+    this.buttonCreate(element, '>', list);
   }
   // button creation
-  buttonCreate(element, simbol) {
+  buttonCreate(element, simbol, list) {
     let button = document.createElement("button");
     let text = document.createTextNode(simbol);
     let att = document.createAttribute("onclick");
-    att.value = "paginationTable('" + simbol + "');";
+    att.value = "paginationTable('" + simbol + "','"+ list +"');";
     button.appendChild(text);
     button.setAttributeNode(att);
     element.appendChild(button);
@@ -122,10 +122,14 @@ class Table {
 }
 
 //onclick function for pagination
-function paginationTable(requiredNumber, listOfEmloyees) {
+function paginationTable(requiredNumber, listNumber) {
   var createTable = new Table;
   let left = '<';
   let right = '>';
+  var list = listOfEmloyees;
+  if(listNumber === 'listOfSearch'){
+  list = listOfSearch;
+  }
   if (left === requiredNumber && buttonStatus != 1) {
     buttonStatus--;
   } else if (right === requiredNumber && buttonStatus != Math.ceil(listOfEmloyees.length / 10)) {
@@ -135,14 +139,14 @@ function paginationTable(requiredNumber, listOfEmloyees) {
       buttonStatus = requiredNumber;
     }
   }
-  var listSliced = listOfEmloyees.slice((buttonStatus - 1) * 10, buttonStatus * 10);
+  var listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
 
 function searchByName() {
-  var createTable = new Table;
-  var listOfSearch = [];
-  var input, filter
+  let createTable = new Table;
+  let listOfSearch = [];
+  let input, filter
   input = document.querySelector("#inputSearch");
   filter = input.value.toUpperCase();
   for (i = 0; i < listOfEmloyees.length; i++) {
@@ -150,8 +154,14 @@ function searchByName() {
       listOfSearch.push(listOfEmloyees[i]);
     }
   }
-  createTable.changeTableContent(cell, listOfSearch);
-  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
+  if(listOfSearch === listOfEmloyees){
+    createTable.changeTableContent(cell, listOfEmloyees);
+    createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
+  }else{
+    createTable.changeTableContent(cell, listOfSearch);
+    createTable.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
+  }
+  
 }
 
 //json access and fetching data
@@ -176,7 +186,7 @@ async function main() {
   var createTable = new Table;
   createTable.generateTableHead(table, data);
   createTable.generateTable(table, listOfEmloyees);
-  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
+  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
   cell = document.querySelectorAll(".cell.text");
 }
 
