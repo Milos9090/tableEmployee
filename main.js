@@ -2,6 +2,7 @@ let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays"
 let cell;
 var listOfEmloyees = []
 var buttonStatus = 2;
+let buttonContainer;
 class Employee {
   //init
   constructor(employeeData) {
@@ -88,6 +89,7 @@ class Table {
   }
   // array of button creation
   createButtons(element, numberOfEmployees) {
+    element.innerHTML = '';
     this.buttonCreate(element, '<');
     for (let index = 1; index <= numberOfEmployees; index++) {
       this.buttonCreate(element, index);
@@ -120,7 +122,7 @@ class Table {
 }
 
 //onclick function for pagination
-function paginationTable(requiredNumber) {
+function paginationTable(requiredNumber, listOfEmloyees) {
   var createTable = new Table;
   let left = '<';
   let right = '>';
@@ -129,16 +131,27 @@ function paginationTable(requiredNumber) {
   } else if (right === requiredNumber && buttonStatus != Math.ceil(listOfEmloyees.length / 10)) {
     buttonStatus++;
   } else {
-    if(left !== requiredNumber && right !== requiredNumber){
-    buttonStatus = requiredNumber;
+    if (left !== requiredNumber && right !== requiredNumber) {
+      buttonStatus = requiredNumber;
     }
   }
   var listSliced = listOfEmloyees.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
 
-function search(){
-  
+function searchByName() {
+  var createTable = new Table;
+  var listOfSearch = [];
+  var input, filter
+  input = document.querySelector("#inputSearch");
+  filter = input.value.toUpperCase();
+  for (i = 0; i < listOfEmloyees.length; i++) {
+    if (listOfEmloyees[i].name.toUpperCase().indexOf(filter) > -1) {
+      listOfSearch.push(listOfEmloyees[i]);
+    }
+  }
+  createTable.changeTableContent(cell, listOfSearch);
+  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10));
 }
 
 //json access and fetching data
@@ -158,7 +171,7 @@ async function fetchData(listOfEmloyees) {
 async function main() {
   await fetchData(listOfEmloyees);
   let table = document.querySelector("table");
-  let buttonContainer = document.querySelector(".buttonContainer");
+  buttonContainer = document.querySelector(".buttonContainer");
 
   var createTable = new Table;
   createTable.generateTableHead(table, data);
