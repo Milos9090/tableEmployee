@@ -2,8 +2,10 @@ var data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays"
 var cell;
 var listOfEmloyees = []
 var listOfSearch = []
+var listSort = [];
 var buttonStatus = 2;
 var buttonContainer;
+var clickCounter = 0;
 class Employee {
   //init
   constructor(employeeData) {
@@ -38,10 +40,24 @@ class Table {
     let row = thead.insertRow();
     for (let key of data) {
       let th = document.createElement("th");
-      let text = document.createTextNode(key);
-      th.appendChild(text);
+      if (key == 'vacationDays') {
+        let button = document.createElement("button");
+        let att = document.createAttribute("onclick");
+        att.value = "sort()";
+        let attc = document.createAttribute("class");
+        attc.value = "sort";
+        button.setAttributeNode(att);
+        button.setAttributeNode(attc);
+        let text = document.createTextNode(key);
+        button.appendChild(text);
+        th.appendChild(button)
+      } else {
+        let text = document.createTextNode(key);
+        th.appendChild(text);
+      }
       row.appendChild(th);
     }
+
   }
   // table body creation
   generateTable(table, data) {
@@ -87,6 +103,7 @@ class Table {
       table[jndex + 7].textContent = "";
       table[jndex + 8].textContent = "";
     }
+
   }
   // array of button creation
   createButtons(element, numberOfEmployees, list) {
@@ -112,7 +129,15 @@ class Table {
 
 //sort
 function sort() {
-
+  if (clickCounter === 0) {
+    //sort();
+    clickCounter++;
+  } else if (clickCounter === 1) {
+    //reverse();
+  } else {
+    //oldState();
+    clickCounter == 0;
+  }
 }
 
 //filter
@@ -141,6 +166,7 @@ function paginationTable(requiredNumber, listNumber) {
   var listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
+
 // search name onclick
 function searchByName() {
   let createTable = new Table;
@@ -157,9 +183,11 @@ function searchByName() {
     console.log(filter == "");
     createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
     createTable.changeTableContent(cell, listOfEmloyees);
+    listSort = listOfEmloyees;
   } else {
     createTable.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
     createTable.changeTableContent(cell, listOfSearch);
+    listSort = listOfSearch;
   }
 
 }
