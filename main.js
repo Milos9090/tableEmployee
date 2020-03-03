@@ -1,8 +1,9 @@
-let data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
-let cell;
+var data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
+var cell;
 var listOfEmloyees = []
+var listOfSearch = []
 var buttonStatus = 2;
-let buttonContainer;
+var buttonContainer;
 class Employee {
   //init
   constructor(employeeData) {
@@ -22,7 +23,7 @@ class Table {
   constructor(table) {
     this.table = table;
   };
-
+  // insert cell text for change date
   insertCellText(element, row) {
     let cell = row.insertCell();
     let text = document.createTextNode(element);
@@ -31,7 +32,7 @@ class Table {
     cell.setAttributeNode(att)
     cell.appendChild(text);
   }
-
+  // table header
   generateTableHead(table, data) {
     let thead = table.createTHead();
     let row = thead.insertRow();
@@ -42,7 +43,7 @@ class Table {
       row.appendChild(th);
     }
   }
-
+  // table body creation
   generateTable(table, data) {
     for (let index = 0; index < 10; index++) {
       const element = data[index];
@@ -58,7 +59,7 @@ class Table {
       this.insertCellText(element.salary, row)
     };
   }
-
+  // change table content with data
   changeTableContent(table, data) {
     let listSize = data.length;
     for (let index = 0; index < listSize; index++) {
@@ -90,7 +91,7 @@ class Table {
   // array of button creation
   createButtons(element, numberOfEmployees, list) {
     element.innerHTML = '';
-    this.buttonCreate(element, '<' , list);
+    this.buttonCreate(element, '<', list);
     for (let index = 1; index <= numberOfEmployees; index++) {
       this.buttonCreate(element, index, list);
     }
@@ -101,24 +102,22 @@ class Table {
     let button = document.createElement("button");
     let text = document.createTextNode(simbol);
     let att = document.createAttribute("onclick");
-    att.value = "paginationTable('" + simbol + "','"+ list +"');";
+    att.value = "paginationTable('" + simbol + "','" + list + "');";
     button.appendChild(text);
     button.setAttributeNode(att);
     element.appendChild(button);
   }
 
-  //search
-  search() { }
+}
 
-  //sort
-  sort() { }
+//sort
+function sort() {
 
-  //filter
-  filter() { }
+}
 
-  removeTable(table) {
-    table.remove();
-  }
+//filter
+function filter() {
+
 }
 
 //onclick function for pagination
@@ -126,13 +125,13 @@ function paginationTable(requiredNumber, listNumber) {
   var createTable = new Table;
   let left = '<';
   let right = '>';
-  var list = listOfEmloyees;
-  if(listNumber === 'listOfSearch'){
-  list = listOfSearch;
+  let list = listOfEmloyees;
+  if (listNumber == 'listOfSearch') {
+    list = listOfSearch;
   }
   if (left === requiredNumber && buttonStatus != 1) {
     buttonStatus--;
-  } else if (right === requiredNumber && buttonStatus != Math.ceil(listOfEmloyees.length / 10)) {
+  } else if (right === requiredNumber && buttonStatus != Math.ceil(list.length / 10)) {
     buttonStatus++;
   } else {
     if (left !== requiredNumber && right !== requiredNumber) {
@@ -142,10 +141,10 @@ function paginationTable(requiredNumber, listNumber) {
   var listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
 };
-
+// search name onclick
 function searchByName() {
   let createTable = new Table;
-  let listOfSearch = [];
+  listOfSearch = [];
   let input, filter
   input = document.querySelector("#inputSearch");
   filter = input.value.toUpperCase();
@@ -154,14 +153,15 @@ function searchByName() {
       listOfSearch.push(listOfEmloyees[i]);
     }
   }
-  if(listOfSearch === listOfEmloyees){
-    createTable.changeTableContent(cell, listOfEmloyees);
+  if (filter == "") {
+    console.log(filter == "");
     createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
-  }else{
-    createTable.changeTableContent(cell, listOfSearch);
+    createTable.changeTableContent(cell, listOfEmloyees);
+  } else {
     createTable.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
+    createTable.changeTableContent(cell, listOfSearch);
   }
-  
+
 }
 
 //json access and fetching data
@@ -177,7 +177,7 @@ async function fetchData(listOfEmloyees) {
       }
     })
 }
-
+// main load
 async function main() {
   await fetchData(listOfEmloyees);
   let table = document.querySelector("table");
