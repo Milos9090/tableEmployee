@@ -1,7 +1,8 @@
-var data = ["picture", "name", "age", "gender", "email", "phone", "vacationDays", "isVacation", "salary"];
+var data = ["Picture", "Name", "Age", "Gender", "Email", "Phone", "Vacation Days", "Is Vacation", "Salary"];
 var cell;
 var listOfEmloyees = []
 var listOfSearch = []
+var listOfAction = [];
 var listSort = [];
 var buttonStatus = 2;
 var buttonContainer;
@@ -34,13 +35,14 @@ class Table {
     cell.setAttributeNode(att)
     cell.appendChild(text);
   }
+
   // table header
   generateTableHead(table, data) {
     let thead = table.createTHead();
     let row = thead.insertRow();
     for (let key of data) {
       let th = document.createElement("th");
-      if (key == 'vacationDays') {
+      if (key == 'Vacation Days') {
         let button = document.createElement("button");
         let att = document.createAttribute("onclick");
         att.value = "sort()";
@@ -59,6 +61,7 @@ class Table {
     }
 
   }
+
   // table body creation
   generateTable(table, data) {
     for (let index = 0; index < 10; index++) {
@@ -75,6 +78,7 @@ class Table {
       this.insertCellText(element.salary, row)
     };
   }
+
   // change table content with data
   changeTableContent(table, data) {
     let listSize = data.length;
@@ -105,6 +109,7 @@ class Table {
     }
 
   }
+
   // array of button creation
   createButtons(element, numberOfEmployees, list) {
     element.innerHTML = '';
@@ -129,15 +134,22 @@ class Table {
 
 //sort
 function sort() {
+  var table = new Table;
+  listSort = listOfAction;
+  console.log(clickCounter);
   if (clickCounter === 0) {
-    //sort();
-    clickCounter++;
+    listSort = listSort.sort(function (a, b) { return a.vacationDays - b.vacationDays });
+    clickCounter = 1;
   } else if (clickCounter === 1) {
-    //reverse();
+    listSort = listSort.reverse();
+    clickCounter = 2;
   } else {
-    //oldState();
-    clickCounter == 0;
+    console.log(clickCounter);
+    listSort = listOfAction;
+    clickCounter = 0;
   }
+  table.createButtons(buttonContainer, Math.ceil(listSort.length / 10), 'listSort');
+  table.changeTableContent(cell, listSort);
 }
 
 //filter
@@ -154,6 +166,9 @@ function paginationTable(requiredNumber, listNumber) {
   if (listNumber == 'listOfSearch') {
     list = listOfSearch;
   }
+  if (listNumber == 'listSort') {
+    list = listSort;
+  }
   if (left === requiredNumber && buttonStatus != 1) {
     buttonStatus--;
   } else if (right === requiredNumber && buttonStatus != Math.ceil(list.length / 10)) {
@@ -165,11 +180,12 @@ function paginationTable(requiredNumber, listNumber) {
   }
   var listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
+  listOfAction = list;
 };
 
 // search name onclick
 function searchByName() {
-  let createTable = new Table;
+  let table = new Table;
   listOfSearch = [];
   let input, filter
   input = document.querySelector("#inputSearch");
@@ -181,13 +197,13 @@ function searchByName() {
   }
   if (filter == "") {
     console.log(filter == "");
-    createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
-    createTable.changeTableContent(cell, listOfEmloyees);
-    listSort = listOfEmloyees;
+    table.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
+    table.changeTableContent(cell, listOfEmloyees);
+    listOfAction = listOfEmloyees;
   } else {
-    createTable.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
-    createTable.changeTableContent(cell, listOfSearch);
-    listSort = listOfSearch;
+    table.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
+    table.changeTableContent(cell, listOfSearch);
+    listOfAction = listOfSearch;
   }
 
 }
@@ -204,6 +220,7 @@ async function fetchData(listOfEmloyees) {
         listOfEmloyees.push(employee);
       }
     })
+  listOfAction = listOfEmloyees;
 }
 // main load
 async function main() {
