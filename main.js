@@ -40,26 +40,41 @@ class Table {
   generateTableHead(table, data) {
     let thead = table.createTHead();
     let row = thead.insertRow();
+    var optionList = ["Is Vacation", "true", "false"];
     for (let key of data) {
       let th = document.createElement("th");
-      if (key == 'Vacation Days') {
-        let button = document.createElement("button");
-        let att = document.createAttribute("onclick");
-        att.value = "sort()";
-        let attc = document.createAttribute("class");
-        attc.value = "sort";
-        button.setAttributeNode(att);
-        button.setAttributeNode(attc);
-        let text = document.createTextNode(key);
-        button.appendChild(text);
-        th.appendChild(button)
-      } else {
-        let text = document.createTextNode(key);
-        th.appendChild(text);
+      let text = document.createTextNode(key);
+      switch (key) {
+        case 'Vacation Days':
+          let button = document.createElement("button");
+          let att = document.createAttribute("onclick");
+          att.value = "sort()";
+          let attc = document.createAttribute("class");
+          attc.value = "sort";
+          button.setAttributeNode(att);
+          button.setAttributeNode(attc);
+          button.appendChild(text);
+          th.appendChild(button)
+          break;
+        case 'Is Vacation':
+          let select = document.createElement("select");
+          for (var i = 0; i < optionList.length; i++) {
+            let option = document.createElement("option");
+            let att = document.createAttribute("onclick");
+            let text1 = document.createTextNode(optionList[i]);
+            att.value = "filter('" + optionList[i] + "')";
+            option.setAttributeNode(att);
+            option.appendChild(text1);
+            select.appendChild(option);
+            th.appendChild(select)
+          }
+          break;
+        default:
+          th.appendChild(text);
+          break;
       }
       row.appendChild(th);
     }
-
   }
 
   // table body creation
@@ -140,12 +155,8 @@ function sort() {
   if (clickCounter === 0) {
     listSort = listSort.sort(function (a, b) { return a.vacationDays - b.vacationDays });
     clickCounter = 1;
-  } else if (clickCounter === 1) {
-    listSort = listSort.reverse();
-    clickCounter = 2;
   } else {
-    console.log(clickCounter);
-    listSort = listOfAction;
+    listSort = listSort.reverse();
     clickCounter = 0;
   }
   table.createButtons(buttonContainer, Math.ceil(listSort.length / 10), 'listSort');
