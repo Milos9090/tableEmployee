@@ -167,16 +167,19 @@ function sort() {
 
 //filter
 function filter() {
-  var select = document.querySelector("tr > th > select");
-  var state = select.options[select.selectedIndex].value;
-  console.log(state);
+  listFilter = [];
+  let select = document.querySelector("tr > th > select");
+  let state = select.options[select.selectedIndex].value.toString();
+  let stateType = state == 'true' ? true : false;
   let table = new Table;
   for (let index = 0; index < listOfAction.length; index++) {
-    if (state === listOfAction[index].isVacation)
+    if (stateType == listOfAction[index].isVacation){
       listFilter.push(listOfAction[index]);
+    }
   }
   table.createButtons(buttonContainer, Math.ceil(listFilter.length / 10), 'listFilter');
   table.changeTableContent(cell, listFilter);
+  listFilter = listOfAction;
 }
 
 //onclick function for pagination
@@ -205,7 +208,11 @@ function paginationTable(requiredNumber, listNumber) {
   }
   var listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
   createTable.changeTableContent(cell, listSliced);
+  if (listNumber == 'listFilter') {
+    listFilter = listOfAction;
+  } else {
   listOfAction = list;
+  }
 };
 
 // search name onclick
@@ -250,6 +257,7 @@ async function fetchData(listOfEmloyees) {
 // main load
 async function main() {
   await fetchData(listOfEmloyees);
+  listOfAction = listOfEmloyees;
   let table = document.querySelector("table");
   buttonContainer = document.querySelector(".buttonContainer");
 
@@ -261,4 +269,3 @@ async function main() {
 }
 
 main();
-
