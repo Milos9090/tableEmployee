@@ -4,6 +4,7 @@ var listOfEmloyees = []
 var listOfSearch = []
 var listOfAction = [];
 var listSort = [];
+var listFilter = [];
 var buttonStatus = 2;
 var buttonContainer;
 var clickCounter = 0;
@@ -60,14 +61,17 @@ class Table {
           let select = document.createElement("select");
           for (var i = 0; i < optionList.length; i++) {
             let option = document.createElement("option");
-            let att = document.createAttribute("onclick");
             let text1 = document.createTextNode(optionList[i]);
-            att.value = "filter('" + optionList[i] + "')";
-            option.setAttributeNode(att);
+            let attv = document.createAttribute("value");
+            attv.value = optionList[i];
+            option.setAttributeNode(attv);
             option.appendChild(text1);
             select.appendChild(option);
-            th.appendChild(select)
           }
+          let att1 = document.createAttribute("onchange");
+          att1.value = "filter()";
+          select.setAttributeNode(att1);
+          th.appendChild(select);
           break;
         default:
           th.appendChild(text);
@@ -144,14 +148,12 @@ class Table {
     button.setAttributeNode(att);
     element.appendChild(button);
   }
-
 }
 
 //sort
 function sort() {
-  var table = new Table;
+  let table = new Table;
   listSort = listOfAction;
-  console.log(clickCounter);
   if (clickCounter === 0) {
     listSort = listSort.sort(function (a, b) { return a.vacationDays - b.vacationDays });
     clickCounter = 1;
@@ -165,7 +167,16 @@ function sort() {
 
 //filter
 function filter() {
-
+  var select = document.querySelector("tr > th > select");
+  var state = select.options[select.selectedIndex].value;
+  console.log(state);
+  let table = new Table;
+  for (let index = 0; index < listOfAction.length; index++) {
+    if (state === listOfAction[index].isVacation)
+      listFilter.push(listOfAction[index]);
+  }
+  table.createButtons(buttonContainer, Math.ceil(listFilter.length / 10), 'listFilter');
+  table.changeTableContent(cell, listFilter);
 }
 
 //onclick function for pagination
@@ -179,6 +190,9 @@ function paginationTable(requiredNumber, listNumber) {
   }
   if (listNumber == 'listSort') {
     list = listSort;
+  }
+  if (listNumber == 'listFilter') {
+    list = listFilter;
   }
   if (left === requiredNumber && buttonStatus != 1) {
     buttonStatus--;
