@@ -1,7 +1,7 @@
 const headTabeleData = ["Picture", "Name", "Age", "Gender", "Email", "Phone", "Vacation Days", "Is Vacation", "Salary"];
 var cell;
-var listOfEmloyees = []
-var listOfSearch = []
+var listOfEmloyees = [];
+var listOfSearch = [];
 var listOfAction = [];
 var listSort = [];
 var listFilter = [];
@@ -108,15 +108,20 @@ class Table {
     for (let index = 0; index < 10; index++) {
       let element = data[index];
       let jndex = index * 9;
-      table[jndex + 0].textContent = index < listSize ? element.picture : "";
-      table[jndex + 1].textContent = index < listSize ? element.name : "";
-      table[jndex + 2].textContent = index < listSize ? element.age : "";
-      table[jndex + 3].textContent = index < listSize ? element.gender : "";
-      table[jndex + 4].textContent = index < listSize ? element.email : "";
-      table[jndex + 5].textContent = index < listSize ? element.phone : "";
-      table[jndex + 6].textContent = index < listSize ? element.vacationDays : "";
-      table[jndex + 7].textContent = index < listSize ? element.isVacation : "";
-      table[jndex + 8].textContent = index < listSize ? element.salary : "";
+
+      var newTable = Object.keys(element).map(function (item, mapindex) {
+        table[jndex + mapindex].textContent = index < listSize ? element[item] : "";
+      })
+
+      // table[jndex + 0].textContent = index < listSize ? element.picture : "";
+      // table[jndex + 1].textContent = index < listSize ? element.name : "";
+      // table[jndex + 2].textContent = index < listSize ? element.age : "";
+      // table[jndex + 3].textContent = index < listSize ? element.gender : "";
+      // table[jndex + 4].textContent = index < listSize ? element.email : "";
+      // table[jndex + 5].textContent = index < listSize ? element.phone : "";
+      // table[jndex + 6].textContent = index < listSize ? element.vacationDays : "";
+      // table[jndex + 7].textContent = index < listSize ? element.isVacation : "";
+      // table[jndex + 8].textContent = index < listSize ? element.salary : "";
     }
   }
 
@@ -273,6 +278,8 @@ async function main() {
   await fetchData(listOfEmloyees);
   let table = document.querySelector("table");
   buttonContainer = document.querySelector(".buttonContainer");
+
+  //new Table(data);
 
   var createTable = new Table;
   createTable.generateTableHead(table, headTabeleData);
