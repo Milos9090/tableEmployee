@@ -8,20 +8,21 @@ var listFilter = [];
 var buttonStatus = 2;
 var buttonContainer;
 var clickCounter = 0;
+var column = 9;
 
 // Employee class 
 class Employee {
   //init
   constructor(employeeData) {
+    this.picture = employeeData.picture;
     this.name = employeeData.name;
     this.age = employeeData.age;
-    this.picture = employeeData.picture;
     this.gender = employeeData.gender;
-    this.salary = employeeData.salary;
-    this.vacationDays = employeeData.vacationDays;
     this.email = employeeData.contact[0].email;
+    this.vacationDays = employeeData.vacationDays;
     this.phone = employeeData.contact[0].phone;
     this.isVacation = employeeData.onVacation;
+    this.salary = employeeData.salary;
   }
 }
 
@@ -103,25 +104,20 @@ class Table {
   }
 
   // change table content with data
-  changeTableContent(table, data) {
+  changeTableContent(table, data, column) {
     let listSize = data.length;
     for (let index = 0; index < 10; index++) {
       let element = data[index];
-      let jndex = index * 9;
-
-      var newTable = Object.keys(element).map(function (item, mapindex) {
-        table[jndex + mapindex].textContent = index < listSize ? element[item] : "";
-      })
-
-      // table[jndex + 0].textContent = index < listSize ? element.picture : "";
-      // table[jndex + 1].textContent = index < listSize ? element.name : "";
-      // table[jndex + 2].textContent = index < listSize ? element.age : "";
-      // table[jndex + 3].textContent = index < listSize ? element.gender : "";
-      // table[jndex + 4].textContent = index < listSize ? element.email : "";
-      // table[jndex + 5].textContent = index < listSize ? element.phone : "";
-      // table[jndex + 6].textContent = index < listSize ? element.vacationDays : "";
-      // table[jndex + 7].textContent = index < listSize ? element.isVacation : "";
-      // table[jndex + 8].textContent = index < listSize ? element.salary : "";
+      let jndex = index * column;
+      if (element != null) {
+        var newTable = Object.keys(element).map(function (item, mapindex) {
+          table[jndex + mapindex].textContent = index < listSize ? element[item] : "";
+        })
+      } else {
+        for (let index = 0; index < column; index++) {
+          table[jndex + index].textContent = "";
+        }
+      }
     }
   }
 
@@ -159,7 +155,7 @@ function sort() {
     clickCounter = 0;
   }
   table.createButtons(buttonContainer, Math.ceil(listSort.length / 10), 'listSort');
-  table.changeTableContent(cell, listSort);
+  table.changeTableContent(cell, listSort, column);
 }
 
 //filter
@@ -190,7 +186,7 @@ function filter() {
     listFilter = listOfAction;
   }
   table.createButtons(buttonContainer, Math.ceil(listFilter.length / 10), 'listFilter');
-  table.changeTableContent(cell, listFilter);
+  table.changeTableContent(cell, listFilter, column);
 }
 
 //onclick function for pagination
@@ -226,7 +222,7 @@ function paginationTable(requiredNumber, listNumber) {
   }
   //slice
   let listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
-  table.changeTableContent(cell, listSliced);
+  table.changeTableContent(cell, listSliced, column);
   if (listNumber == 'listFilter') {
     listFilter = listOfAction;
   } else {
@@ -248,11 +244,11 @@ function searchByName() {
   }
   if (filter == "") {
     table.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
-    table.changeTableContent(cell, listOfEmloyees);
+    table.changeTableContent(cell, listOfEmloyees, column);
     listOfAction = listOfEmloyees;
   } else {
     table.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
-    table.changeTableContent(cell, listOfSearch);
+    table.changeTableContent(cell, listOfSearch, column);
     listOfAction = listOfSearch;
   }
 
