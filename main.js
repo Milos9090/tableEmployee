@@ -1,4 +1,5 @@
 const headTabeleData = ["Picture", "Name", "Age", "Gender", "Email", "Phone", "Vacation Days", "Is Vacation", "Salary"];
+var table = document.querySelector("table");
 var cell;
 var listOfEmloyees = [];
 var listOfSearch = [];
@@ -9,6 +10,7 @@ var buttonStatus = 2;
 var buttonContainer;
 var clickCounter = 0;
 var column = 9;
+var row = 10;
 
 // Employee class 
 class Employee {
@@ -26,96 +28,26 @@ class Employee {
   }
 }
 
-
 class Table {
-  constructor(table) {
-    this.table = table;
+
+  constructor(tableSelector, list, typeList) {
+    this.createButtons(buttonContainer, Math.ceil(list.length / 10), typeList);
+    this.changeTableContent(cell, list);
   };
 
-  // table header
-  generateTableHead(table, data) {
-    let thead = table.createTHead();
-    let row = thead.insertRow();
-    const optionList = ["Is Vacation", "true", "false"];
-    for (let key of data) {
-      let th = document.createElement("th");
-      let text = document.createTextNode(key);
-      switch (key) {
-        case 'Vacation Days':
-          let button = document.createElement("button");
-          let att = document.createAttribute("onclick");
-          att.value = "sort()";
-          let attc = document.createAttribute("class");
-          attc.value = "sort";
-          button.setAttributeNode(att);
-          button.setAttributeNode(attc);
-          button.appendChild(text);
-          th.appendChild(button)
-          break;
-        case 'Is Vacation':
-          let select = document.createElement("select");
-          for (let i = 0; i < optionList.length; i++) {
-            let option = document.createElement("option");
-            let text1 = document.createTextNode(optionList[i]);
-            let attv = document.createAttribute("value");
-            attv.value = optionList[i];
-            option.setAttributeNode(attv);
-            option.appendChild(text1);
-            select.appendChild(option);
-          }
-          let att1 = document.createAttribute("onclick");
-          att1.value = "filter()";
-          select.setAttributeNode(att1);
-          th.appendChild(select);
-          break;
-        default:
-          th.appendChild(text);
-          break;
-      }
-      row.appendChild(th);
-    }
-  }
-
-  // table body creation
-  generateTable(table, data) {
-    for (let index = 0; index < 10; index++) {
-      const element = data[index];
-      let row = table.insertRow();
-      this.insertCellText(element.picture, row)
-      this.insertCellText(element.name, row)
-      this.insertCellText(element.age, row)
-      this.insertCellText(element.gender, row)
-      this.insertCellText(element.email, row)
-      this.insertCellText(element.phone, row)
-      this.insertCellText(element.vacationDays, row)
-      this.insertCellText(element.isVacation, row)
-      this.insertCellText(element.salary, row)
-    };
-  }
-
-  // insert cell text for change date
-  insertCellText(element, row) {
-    let cell = row.insertCell();
-    let text = document.createTextNode(element);
-    let att = document.createAttribute("class");
-    att.value = "cell text";
-    cell.setAttributeNode(att)
-    cell.appendChild(text);
-  }
-
   // change table content with data
-  changeTableContent(table, data, column) {
+  changeTableContent(cell, data) {
     let listSize = data.length;
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < row; index++) {
       let element = data[index];
       let jndex = index * column;
       if (element != null) {
         var newTable = Object.keys(element).map(function (item, mapindex) {
-          table[jndex + mapindex].textContent = index < listSize ? element[item] : "";
+          cell[jndex + mapindex].textContent = index < listSize ? element[item] : "";
         })
       } else {
         for (let index = 0; index < column; index++) {
-          table[jndex + index].textContent = "";
+          cell[jndex + index].textContent = "";
         }
       }
     }
@@ -143,9 +75,80 @@ class Table {
   }
 }
 
+// table header
+function generateTableHead(tableSelector, data) {
+  let thead = tableSelector.createTHead();
+  let row = thead.insertRow();
+  const optionList = ["Is Vacation", "true", "false"];
+  for (let key of data) {
+    let th = document.createElement("th");
+    let text = document.createTextNode(key);
+    switch (key) {
+      case 'Vacation Days':
+        let button = document.createElement("button");
+        let att = document.createAttribute("onclick");
+        att.value = "sort()";
+        let attc = document.createAttribute("class");
+        attc.value = "sort";
+        button.setAttributeNode(att);
+        button.setAttributeNode(attc);
+        button.appendChild(text);
+        th.appendChild(button)
+        break;
+      case 'Is Vacation':
+        let select = document.createElement("select");
+        for (let i = 0; i < optionList.length; i++) {
+          let option = document.createElement("option");
+          let text1 = document.createTextNode(optionList[i]);
+          let attv = document.createAttribute("value");
+          attv.value = optionList[i];
+          option.setAttributeNode(attv);
+          option.appendChild(text1);
+          select.appendChild(option);
+        }
+        let att1 = document.createAttribute("onclick");
+        att1.value = "filter()";
+        select.setAttributeNode(att1);
+        th.appendChild(select);
+        break;
+      default:
+        th.appendChild(text);
+        break;
+    }
+    row.appendChild(th);
+  }
+}
+
+
+// table body creation
+function generateTable(tableSelector, data) {
+  for (let index = 0; index < row; index++) {
+    const element = data[index];
+    let row = tableSelector.insertRow();
+    insertCellText(element.picture, row)
+    insertCellText(element.name, row)
+    insertCellText(element.age, row)
+    insertCellText(element.gender, row)
+    insertCellText(element.email, row)
+    insertCellText(element.phone, row)
+    insertCellText(element.vacationDays, row)
+    insertCellText(element.isVacation, row)
+    insertCellText(element.salary, row)
+  }
+}
+
+// insert cell text for change date
+function insertCellText(element, row) {
+  let cell = row.insertCell();
+  let text = document.createTextNode(element);
+  let att = document.createAttribute("class");
+  att.value = "cell text";
+  cell.setAttributeNode(att)
+  cell.appendChild(text);
+}
+
 //sort
 function sort() {
-  let table = new Table;
   listSort = listOfAction;
   if (clickCounter === 0) {
     listSort = listSort.sort(function (a, b) { return a.vacationDays - b.vacationDays });
@@ -154,14 +157,12 @@ function sort() {
     listSort = listSort.reverse();
     clickCounter = 0;
   }
-  table.createButtons(buttonContainer, Math.ceil(listSort.length / 10), 'listSort');
-  table.changeTableContent(cell, listSort, column);
+  new Table(table, listSort, 'listSort');
 }
 
 //filter
 function filter() {
   listFilter = [];
-  let table = new Table;
   const select = document.querySelector("tr > th > select");
   let state = select.options[select.selectedIndex].value.toString();
   let stateType;
@@ -185,13 +186,11 @@ function filter() {
   } else {
     listFilter = listOfAction;
   }
-  table.createButtons(buttonContainer, Math.ceil(listFilter.length / 10), 'listFilter');
-  table.changeTableContent(cell, listFilter, column);
+  new Table(table, listFilter, 'listFilter');
 }
 
 //onclick function for pagination
 function paginationTable(requiredNumber, listNumber) {
-  let table = new Table;
   let left = '<';
   let right = '>';
   let list = listOfEmloyees;
@@ -201,7 +200,7 @@ function paginationTable(requiredNumber, listNumber) {
       list = listOfSearch;
       break;
     case 'listSort':
-      list = listOfSearch;
+      list = listSort;
       break;
     case 'listFilter':
       list = listFilter;
@@ -222,7 +221,7 @@ function paginationTable(requiredNumber, listNumber) {
   }
   //slice
   let listSliced = list.slice((buttonStatus - 1) * 10, buttonStatus * 10);
-  table.changeTableContent(cell, listSliced, column);
+  new Table(table, listSliced, listNumber);
   if (listNumber == 'listFilter') {
     listFilter = listOfAction;
   } else {
@@ -232,7 +231,6 @@ function paginationTable(requiredNumber, listNumber) {
 
 // search name onclick
 function searchByName() {
-  let table = new Table;
   let input, filter;
   listOfSearch = [];
   input = document.querySelector("#inputSearch");
@@ -243,12 +241,10 @@ function searchByName() {
     }
   }
   if (filter == "") {
-    table.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
-    table.changeTableContent(cell, listOfEmloyees, column);
+    new Table(table, listOfEmloyees, 'listOfEmloyees');
     listOfAction = listOfEmloyees;
   } else {
-    table.createButtons(buttonContainer, Math.ceil(listOfSearch.length / 10), 'listOfSearch');
-    table.changeTableContent(cell, listOfSearch, column);
+    new Table(table, listOfSearch, 'listOfSearch');
     listOfAction = listOfSearch;
   }
 
@@ -271,17 +267,14 @@ async function fetchData(listOfEmloyees) {
 
 // main load
 async function main() {
+  //get data
   await fetchData(listOfEmloyees);
-  let table = document.querySelector("table");
+  //physical table
+  generateTableHead(table, headTabeleData);
+  generateTable(table, listOfEmloyees);
   buttonContainer = document.querySelector(".buttonContainer");
-
-  //new Table(data);
-
-  var createTable = new Table;
-  createTable.generateTableHead(table, headTabeleData);
-  createTable.generateTable(table, listOfEmloyees);
-  createTable.createButtons(buttonContainer, Math.ceil(listOfEmloyees.length / 10), 'listOfEmloyees');
   cell = document.querySelectorAll(".cell.text");
+  new Table(table, listOfEmloyees, 'listOfEmloyees');
 }
 
 main();
